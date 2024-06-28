@@ -22,16 +22,14 @@ const List = ({todos, onUpdate, onDelete}) => {
 
   const filteredTodos = getFilteredData();
 
-  const getAnalyzedData = () => {
+  const {totalCount, doneCount, notDoneCount} = useMemo(() => {
     console.log("getAnalyzedData!!");
     const totalCount = todos.length;
     const doneCount = todos.filter((todo) => todo.isDone).length;
     const notDoneCount = totalCount - doneCount;
 
     return {totalCount, doneCount, notDoneCount};
-  }
-
-  const {totalCount, doneCount, notDoneCount} = getAnalyzedData();
+  }, [todos])
 
   return (
       <div className="List">
