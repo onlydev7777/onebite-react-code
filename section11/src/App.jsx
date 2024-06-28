@@ -2,7 +2,7 @@ import './App.css'
 import Header from "./components/Header.jsx";
 import Editor from "./components/Editor.jsx";
 import List from "./components/List.jsx";
-import {useState, useRef, useReducer, useCallback} from "react";
+import {useState, useRef, useReducer, useCallback, createContext} from "react";
 import Exam from "./components/Exam.jsx";
 
 const mockData = [
@@ -26,27 +26,29 @@ const mockData = [
   }
 ];
 
-function reducer(state, action) {
+export const TodoContext = createContext();
+
+function reducer(todos, action) {
   switch (action.type) {
     case 'CREATE':
-      return [action.data, ...state];
+      return [action.data, ...todos];
     case 'UPDATE':
-      return state.map((todo) =>
+      return todos.map((todo) =>
           todo.id === action.targetId
               ? {...todo, isDone: !todo.isDone}
               : todo
       );
     case 'DELETE':
-      return state.filter((todo) =>
+      return todos.filter((todo) =>
           todo.id !== action.targetId
       );
     default:
-      return state;
+      return todos;
   }
 }
 
 function App() {
-  const [state, dispatch] = useReducer(reducer, mockData);
+  const [todos, dispatch] = useReducer(reducer, mockData);
   const idRef = useRef(3)
 
   const onCreate = useCallback((content) => {
@@ -78,8 +80,10 @@ function App() {
   return (
       <div className="App">
         <Header/>
-        <Editor onCreate={onCreate}/>
-        <List todos={state} onUpdate={onUpdate} onDelete={onDelete}/>
+        <TodoContext.Provider value={{todos, onCreate, onUpdate, onDelete}}>
+          <Editor/>
+          <List/>
+        </TodoContext.Provider>
       </div>
   )
 }
