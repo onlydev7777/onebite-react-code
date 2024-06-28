@@ -92,6 +92,8 @@ function App() {
   return (
       <div className="App">
         <Header/>
+        {/*Context.Provider에서 제공한 value 값이 달라진다면 useContext를 사용하고 있는 모든 컴포넌트가 리렌더링 대상이 된다
+        따라서 todos (상태처리 Context)와 actionContext(이벤트 Context)의 분리가 필요하다.*/}
         <TodoStateContext.Provider value={todos}>
           <TodoActionContext.Provider value={memorizedDispatch}>
             <Editor/>
