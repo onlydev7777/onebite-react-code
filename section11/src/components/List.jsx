@@ -1,10 +1,10 @@
 import "./List.css";
 import TodoItem from "./TodoItem";
 import {useState, useMemo, useContext, useCallback} from "react";
-import {TodoContext} from "../App.jsx";
+import {TodoStateContext} from "../App.jsx";
 
 const List = () => {
-  const {todos} = useContext(TodoContext);
+  const todos = useContext(TodoStateContext);
   const [search, setSearch] = useState("");
   const onChangeSearch = (e) => {
     setSearch(e.target.value);

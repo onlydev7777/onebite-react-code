@@ -2,7 +2,14 @@ import './App.css'
 import Header from "./components/Header.jsx";
 import Editor from "./components/Editor.jsx";
 import List from "./components/List.jsx";
-import {useState, useRef, useReducer, useCallback, createContext} from "react";
+import {
+  useState,
+  useRef,
+  useReducer,
+  useCallback,
+  createContext,
+  useMemo
+} from "react";
 import Exam from "./components/Exam.jsx";
 
 const mockData = [
@@ -26,7 +33,8 @@ const mockData = [
   }
 ];
 
-export const TodoContext = createContext();
+export const TodoStateContext = createContext();
+export const TodoActionContext = createContext();
 
 function reducer(todos, action) {
   switch (action.type) {
@@ -51,7 +59,7 @@ function App() {
   const [todos, dispatch] = useReducer(reducer, mockData);
   const idRef = useRef(3)
 
-  const onCreate = useCallback((content) => {
+  const onCreate = (content) => {
     dispatch({
       type: "CREATE",
       data: {
@@ -61,29 +69,35 @@ function App() {
         date: new Date().getTime()
       }
     });
-  }, []);
+  };
 
-  const onUpdate = useCallback((targetId) => {
+  const onUpdate = (targetId) => {
     dispatch({
       type: 'UPDATE',
       targetId: targetId
     });
-  }, []);
+  };
 
-  const onDelete = useCallback((targetId) => {
+  const onDelete = (targetId) => {
     dispatch({
       type: 'DELETE',
       targetId: targetId
     });
+  };
+
+  const memorizedDispatch = useMemo(() => {
+    return {onCreate, onUpdate, onDelete};
   }, []);
 
   return (
       <div className="App">
         <Header/>
-        <TodoContext.Provider value={{todos, onCreate, onUpdate, onDelete}}>
-          <Editor/>
-          <List/>
-        </TodoContext.Provider>
+        <TodoStateContext.Provider value={todos}>
+          <TodoActionContext.Provider value={memorizedDispatch}>
+            <Editor/>
+            <List/>
+          </TodoActionContext.Provider>
+        </TodoStateContext.Provider>
       </div>
   )
 }
