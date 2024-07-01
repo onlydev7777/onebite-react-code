@@ -17,6 +17,7 @@ function App() {
   return (
       <>
         <div>
+          <img src={getEmotionImage(1)}/>
           <img src={getEmotionImage(2)}/>
           <img src={getEmotionImage(3)}/>
           <img src={getEmotionImage(4)}/>
