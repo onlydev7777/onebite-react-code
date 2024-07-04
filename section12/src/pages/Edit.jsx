@@ -2,28 +2,21 @@ import {useNavigate, useParams} from "react-router-dom";
 import Header from "../components/Header.jsx";
 import Button from "../components/Button.jsx";
 import Editor from "../components/Editor.jsx";
-import {useContext, useEffect, useState} from "react";
-import {DiaryDispatchContext, DiaryStateContext} from "../App.jsx";
+import {useContext} from "react";
+import {DiaryDispatchContext} from "../App.jsx";
+import useDiary from "../hooks/useDiary.jsx";
 
 const Edit = () => {
   const params = useParams();
   const nav = useNavigate();
-  const [curDiaryItem, setCurDiaryItem] = useState();
-  const {onDelete, onUpdate} = useContext(DiaryDispatchContext);
-  const data = useContext(DiaryStateContext);
-
-  useEffect(() => {
-    const currentDiaryItem = data.find(
-        (item) => String(item.id) === String(params.id));
-
-    if (!currentDiaryItem) {
-      window.alert("존재하지 않는 일기입니다.");
-      nav("/", {replace: true});
-    }
-
-    setCurDiaryItem(currentDiaryItem);
-  }, [params.id, data]);
-
+  const {onUpdate, onDelete} = useContext(DiaryDispatchContext);
+  const curDiaryItem = useDiary(params.id);
+  //1. 최초 load 시에는 undefined 반환
+  if (!curDiaryItem) {
+    return <div>데이터 로딩중...</div>;
+  }
+  //2. 렌더링 된 후 useDiary > useEffect로 curDiaryItem 다시 리렌더링
+  
   const onClickDelete = () => {
     if (window.confirm("정말 삭제하시겠습니까?")) {
       onDelete(params.id);
