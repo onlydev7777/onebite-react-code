@@ -5,18 +5,20 @@ import Editor from "../components/Editor.jsx";
 import {useContext} from "react";
 import {DiaryDispatchContext} from "../App.jsx";
 import useDiary from "../hooks/useDiary.jsx";
+import usePageTitle from "../hooks/usePageTitle.jsx";
 
 const Edit = () => {
   const params = useParams();
   const nav = useNavigate();
   const {onUpdate, onDelete} = useContext(DiaryDispatchContext);
   const curDiaryItem = useDiary(params.id);
+  usePageTitle(`${params.id}번 일기 수정`);
   //1. 최초 load 시에는 undefined 반환
   if (!curDiaryItem) {
     return <div>데이터 로딩중...</div>;
   }
   //2. 렌더링 된 후 useDiary > useEffect로 curDiaryItem 다시 리렌더링
-  
+
   const onClickDelete = () => {
     if (window.confirm("정말 삭제하시겠습니까?")) {
       onDelete(params.id);

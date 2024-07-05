@@ -4,11 +4,13 @@ import Button from "../components/Button.jsx";
 import Viewer from "../components/Viewer.jsx";
 import useDiary from "../hooks/useDiary.jsx";
 import {getStringedDate} from "../util/get-stringed-date.js";
+import usePageTitle from "../hooks/usePageTitle.jsx";
 
 const Diary = () => {
   const params = useParams();
   const nav = useNavigate();
   const curDiaryItem = useDiary(params.id);
+  usePageTitle(`${params.id}번 일기`);
 
   //1. 최초 load 시에는 undefined 반환
   if (!curDiaryItem) {
@@ -17,7 +19,7 @@ const Diary = () => {
 
   //2. 렌더링 된 후 useDiary > useEffect로 curDiaryItem 다시 리렌더링
   const {createdDate, emotionId, content} = curDiaryItem;
-  
+
   const title = getStringedDate(new Date(createdDate));
 
   return (
